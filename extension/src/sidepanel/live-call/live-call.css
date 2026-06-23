@@ -1,0 +1,509 @@
+/* extension/src/sidepanel/live-call/live-call.css */
+
+/* ============================================================
+   Root
+   ============================================================ */
+
+.lc-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ============================================================
+   RecordingBar
+   ============================================================ */
+
+.lc-rec-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+}
+
+.lc-rec-stop {
+  border: 1.5px solid #E24B4A;
+  font-size: 12px;
+  font-weight: 500;
+  color: #E24B4A;
+  background: transparent;
+  border-radius: 8px;
+  padding: 4px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lc-rec-dot {
+  width: 8px;
+  height: 8px;
+  background: #E24B4A;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.lc-mic-bars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 16px;
+}
+
+.lc-mic-bar {
+  width: 2px;
+  border-radius: 1px;
+  background: #2563eb;
+}
+
+.lc-rec-timer {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937;
+  font-variant-numeric: tabular-nums;
+}
+
+/* RecordingBar done state (Phase 4) */
+.lc-rec-bar--done {
+  padding: 12px 16px;
+}
+
+.lc-rec-pill-done {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #9ca3af;
+  background: #f3f4f6;
+  border-radius: 8px;
+  padding: 4px 12px;
+}
+
+.lc-rec-dot--done {
+  background: #9ca3af;
+  border-radius: 50%;
+}
+
+/* .lc-rec-done-text removed — duration text stays in vanilla DOM */
+
+/* ============================================================
+   ConnectionStatus
+   ============================================================ */
+
+.lc-conn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  color: #9ca3af;
+  padding: 6px 16px;
+  border-bottom: 0.5px solid #e5e7eb;
+}
+
+.lc-conn-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.lc-conn-dot--on {
+  background: #5DCAA5;
+}
+
+.lc-conn-dot--off {
+  background: #E24B4A;
+}
+
+.lc-conn-label--off {
+  opacity: 0.5;
+}
+
+/* ============================================================
+   AIHintCard
+   ============================================================ */
+
+.lc-hint-card {
+  padding: 14px 16px;
+  border-radius: 12px;
+  margin: 8px 16px;
+  transition: background 200ms, border-color 200ms;
+}
+
+.lc-hint-null {
+  background: #f9fafb;
+  border-left: none;
+  text-align: center;
+}
+
+.lc-hint-null-text {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.lc-hint-null-sub {
+  font-size: 11px;
+  color: #d1d5db;
+  margin-top: 4px;
+}
+
+.lc-hint-label {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.lc-hint-headline {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.lc-hint-detail {
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 4px;
+}
+
+.lc-hint-coaching {
+  font-size: 11px;
+  font-style: italic;
+  color: #9ca3af;
+  margin-top: 8px;
+}
+
+.lc-hint-check-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #639922;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lc-hint-success-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ============================================================
+   TalkRatioBar
+   ============================================================ */
+
+.lc-ratio {
+  padding: 12px 16px;
+}
+
+.lc-ratio-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.lc-ratio-label {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.lc-ratio-label strong {
+  font-size: 12px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.lc-ratio-track {
+  height: 6px;
+  border-radius: 3px;
+  background: #EAF3DE;
+  overflow: hidden;
+}
+
+.lc-ratio-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: #2563eb;
+  transition: width 0.8s ease;
+}
+
+.lc-waveform {
+  display: flex;
+  gap: 1px;
+  height: 16px;
+  align-items: flex-end;
+  margin-top: 8px;
+}
+
+.lc-wave-bar {
+  width: 2px;
+  border-radius: 1px;
+  opacity: 0.4;
+}
+
+.lc-wave-manager {
+  background: #2563eb;
+}
+
+.lc-wave-client {
+  background: #5DCAA5;
+}
+
+.lc-ratio-hint {
+  font-size: 11px;
+  text-align: center;
+  margin-top: 6px;
+}
+
+/* ============================================================
+   ContextTabs
+   ============================================================ */
+
+.lc-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 0 16px 12px;
+  overflow-x: auto;
+}
+
+.lc-tab {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 0.5px solid #e5e7eb;
+  background: white;
+  color: #6b7280;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.lc-tab:hover {
+  background: #f9fafb;
+}
+
+.lc-tab--active {
+  background: #E6F1FB;
+  color: #2563eb;
+  border-color: transparent;
+}
+
+.lc-tab-content {
+  padding: 8px 16px;
+}
+
+.lc-tab-empty {
+  font-size: 12px;
+  color: #9ca3af;
+  text-align: center;
+  padding: 16px 0;
+}
+
+.lc-objection {
+  padding: 8px 0;
+  border-bottom: 0.5px solid #f3f4f6;
+}
+
+.lc-objection-q {
+  font-size: 12px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.lc-objection-a {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.lc-focus-point {
+  padding: 8px 0;
+  border-bottom: 0.5px solid #f3f4f6;
+}
+
+.lc-focus-point-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.lc-focus-point-text {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* Prevent components above transcript from shrinking */
+.lc-rec-bar,
+.lc-conn,
+.lc-hint-card,
+.lc-ratio,
+.lc-tabs-container,
+.lc-tab-content { flex-shrink: 0; }
+
+/* ============================================================
+   TranscriptFeed
+   ============================================================ */
+
+.lc-transcript {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+}
+
+.lc-transcript-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px 0;
+}
+
+.lc-transcript-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.lc-live-badge {
+  font-size: 11px;
+  font-weight: 500;
+  color: #E24B4A;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lc-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #E24B4A;
+  display: inline-block;
+}
+
+.lc-transcript-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 16px;
+}
+
+.lc-jump-pill {
+  position: sticky;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2563eb;
+  color: white;
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  z-index: 1;
+}
+
+/* ============================================================
+   TranscriptMessage
+   ============================================================ */
+
+.lc-msg {
+  padding: 8px 0;
+  border-bottom: 0.5px solid #f3f4f6;
+}
+
+.lc-msg-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.lc-msg-speaker {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.lc-msg-speaker--mgr {
+  color: #2563eb;
+}
+
+.lc-msg-speaker--cli {
+  color: #1D9E75;
+}
+
+.lc-msg-time {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.lc-msg-body {
+  display: flex;
+  gap: 8px;
+}
+
+.lc-msg-bar {
+  width: 3px;
+  border-radius: 1.5px;
+  min-height: 12px;
+  align-self: stretch;
+}
+
+.lc-msg-bar--mgr {
+  background: #2563eb;
+}
+
+.lc-msg-bar--cli {
+  background: #1D9E75;
+}
+
+.lc-msg-text {
+  font-size: 13px;
+  font-weight: 400;
+  color: #1f2937;
+  line-height: 1.45;
+}
+
+.lc-msg--interim {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.lc-msg--interim .lc-msg-text {
+  color: inherit;
+  font-style: inherit;
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes lc-pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes lc-bounce {
+    0%, 100% { transform: scaleY(0.4); }
+    50% { transform: scaleY(1); }
+  }
+
+  .lc-rec-dot {
+    animation: lc-pulse 1.2s ease-in-out infinite;
+  }
+
+  .lc-mic-bar {
+    transition: height 0.08s ease-out;
+  }
+
+  .lc-live-dot {
+    animation: lc-pulse 1.2s ease-in-out infinite;
+  }
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Доступ к микрофону</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 20px;
+        text-align: center;
+      }
+      h2 { color: #1a1a1a; margin-bottom: 16px; }
+      p { color: #6b7280; margin-bottom: 24px; }
+      button {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 6px;
+        font-size: 15px;
+        cursor: pointer;
+      }
+      #error { color: #dc2626; margin-top: 12px; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <h2>Доступ к микрофону</h2>
+    <p>
+      Нажмите кнопку ниже, чтобы разрешить доступ к микрофону для записи звонков.
+    </p>
+    <button id="grant-btn">Разрешить доступ</button>
+    <div id="error"></div>
+    <script type="module" src="permissions.ts"></script>
+  </body>
+</html>

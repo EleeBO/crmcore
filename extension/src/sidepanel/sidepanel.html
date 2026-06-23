@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Sales Copilot</title>
+    <link rel="stylesheet" href="sidepanel.css" />
+  </head>
+  <body>
+    <!-- ── Header (44px, fixed) ──────────────────────────────── -->
+    <header id="header">
+      <h1>AI Sales Copilot <span id="app-version" style="font-size:10px;opacity:0.5"></span></h1>
+      <div class="header-right">
+        <span id="status-pill" class="status-pill" hidden></span>
+        <button id="gear-btn" class="gear-btn" type="button" aria-label="Настройки">&#x2699;</button>
+      </div>
+    </header>
+
+    <!-- ── Control Bar (52px, sticky) ────────────────────────── -->
+    <div id="control-bar">
+      <div class="control-row">
+        <button id="rec-btn" class="rec-btn rec-idle" type="button" disabled>
+          <span class="rec-dot"></span>
+          <span id="rec-label">REC</span>
+        </button>
+        <div id="vu-meters" class="vu-meters" hidden aria-hidden="true">
+          <div class="vu-row">
+            <span class="vu-label">МИК</span>
+            <div class="vu-track"><div class="vu-fill" id="vu-mic"></div></div>
+          </div>
+          <div class="vu-row">
+            <span class="vu-label">ЗВУК</span>
+            <div class="vu-track"><div class="vu-fill" id="vu-tab"></div></div>
+          </div>
+        </div>
+        <span id="status-text" class="status-text">Готов</span>
+      </div>
+      <div id="preflight-status" class="preflight-row" hidden aria-label="Статус сервисов">
+        <span class="preflight-chip" id="pf-stt" data-status="checking">
+          <span class="pf-dot"></span> STT
+        </span>
+        <span class="preflight-chip" id="pf-llm" data-status="checking">
+          <span class="pf-dot"></span> LLM
+        </span>
+        <span class="preflight-chip" id="pf-redis" data-status="checking">
+          <span class="pf-dot"></span> Redis
+        </span>
+      </div>
+    </div>
+
+    <!-- ── Session Error Banner ──────────────────────────────── -->
+    <div id="session-error-banner" class="error-banner" hidden aria-live="assertive"></div>
+
+    <!-- ── Content Area (scrollable, phase-driven) ───────────── -->
+    <main id="content-area">
+
+      <!-- Phase 0: Upload drop zone -->
+      <section id="phase-0" class="phase active">
+        <div
+          id="drop-zone"
+          role="button"
+          tabindex="0"
+          aria-label="Зона загрузки файлов"
+          aria-describedby="drop-hint"
+        >
+          <span id="drop-hint">Перетащите файлы сюда или нажмите для выбора</span>
+          <span class="drop-hint-formats">PDF, XLSX, DOCX, MD, TXT — до 50 МБ</span>
+          <input
+            id="file-input"
+            type="file"
+            accept=".pdf,.xlsx,.xls,.docx,.md,.txt"
+            multiple
+            tabindex="-1"
+          />
+        </div>
+        <ul id="failed-files" hidden aria-live="polite"></ul>
+      </section>
+
+      <!-- Phase 1: Uploading stepper -->
+      <section id="phase-1" class="phase">
+        <div id="upload-stepper" role="group" aria-label="Прогресс загрузки">
+          <div class="stepper">
+            <div class="step" id="step-upload" data-step="1" aria-label="Шаг 1: Загрузка">
+              <div class="step-icon">
+                <svg class="step-check" viewBox="0 0 16 16" width="14" height="14" hidden aria-hidden="true">
+                  <path d="M13.5 4.5l-7 7L3 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg class="step-spinner" viewBox="0 0 16 16" width="14" height="14" hidden aria-hidden="true">
+                  <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="28 10" stroke-linecap="round">
+                    <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="0.8s" repeatCount="indefinite"/>
+                  </circle>
+                </svg>
+                <span class="step-number">1</span>
+              </div>
+              <span class="step-label">Загрузка</span>
+            </div>
+            <div class="step-line" id="line-1-2"></div>
+            <div class="step" id="step-process" data-step="2" aria-label="Шаг 2: Обработка">
+              <div class="step-icon">
+                <svg class="step-check" viewBox="0 0 16 16" width="14" height="14" hidden aria-hidden="true">
+                  <path d="M13.5 4.5l-7 7L3 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg class="step-spinner" viewBox="0 0 16 16" width="14" height="14" hidden aria-hidden="true">
+                  <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="28 10" stroke-linecap="round">
+                    <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="0.8s" repeatCount="indefinite"/>
+                  </circle>
+                </svg>
+                <span class="step-number">2</span>
+              </div>
+              <span class="step-label">Обработка</span>
+            </div>
+            <div class="step-line" id="line-2-3"></div>
+            <div class="step" id="step-briefing" data-step="3" aria-label="Шаг 3: Брифинг">
+              <div class="step-icon">
+                <svg class="step-check" viewBox="0 0 16 16" width="14" height="14" hidden aria-hidden="true">
+                  <path d="M13.5 4.5l-7 7L3 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg class="step-spinner" viewBox="0 0 16 16" width="14" height="14" hidden aria-hidden="true">
+                  <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="28 10" stroke-linecap="round">
+                    <animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="0.8s" repeatCount="indefinite"/>
+                  </circle>
+                </svg>
+                <span class="step-number">3</span>
+              </div>
+              <span class="step-label">Брифинг</span>
+            </div>
+          </div>
+          <span id="stepper-text" class="stepper-status-text" aria-live="polite">Загружаем файлы...</span>
+        </div>
+      </section>
+
+      <!-- Phase 2: Briefing ready -->
+      <section id="phase-2" class="phase">
+        <div id="briefing-loading" hidden aria-live="polite">Генерация брифинга...</div>
+        <div id="briefing-content" hidden>
+          <!-- Preact BriefPanel mounts here -->
+        </div>
+        <div id="file-strip" class="file-strip" hidden>
+          <span id="file-strip-names" class="file-strip-names"></span>
+          <a id="reload-files-btn" href="#" class="btn-link">Перезагрузить</a>
+          <a id="refresh-briefing-btn" href="#" class="btn-link">Обновить брифинг</a>
+        </div>
+      </section>
+
+      <!-- Phase 3: Live call (PRIMARY) — Preact mount point -->
+      <section id="phase-3" class="phase">
+        <div id="live-call-root"></div>
+        <!-- Collapsed briefing (managed by sidepanel.ts, shown by ContextTabs) -->
+        <div id="briefing-collapsed" class="briefing-collapsed" hidden>
+          <!-- Preact BriefPanel (compact) mounts here -->
+        </div>
+      </section>
+
+      <!-- Phase 4: Call ended -->
+      <section id="phase-4" class="phase">
+        <div id="rec-bar-phase4"></div>
+        <div id="completion-strip" class="completion-strip">
+          <span id="completion-text">Звонок завершён</span>
+          <button id="new-call-btn" class="btn-primary" type="button">Новый звонок</button>
+        </div>
+        <!-- Evaluation summary (FEAT-004) -->
+        <div id="eval-loading" class="eval-loading" hidden>
+          <div class="eval-progress">
+            <div class="eval-progress-step" id="eval-step-1" data-step="1">
+              <div class="eval-step-icon">
+                <span class="eval-step-number">1</span>
+                <svg class="eval-step-spinner" viewBox="0 0 16 16" width="12" height="12"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="28 10" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="0.8s" repeatCount="indefinite"/></circle></svg>
+                <svg class="eval-step-check" viewBox="0 0 16 16" width="12" height="12"><path d="M13.5 4.5l-7 7L3 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span>Загружаем транскрипт</span>
+            </div>
+            <div class="eval-progress-step" id="eval-step-2" data-step="2">
+              <div class="eval-step-icon">
+                <span class="eval-step-number">2</span>
+                <svg class="eval-step-spinner" viewBox="0 0 16 16" width="12" height="12"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="28 10" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="0.8s" repeatCount="indefinite"/></circle></svg>
+                <svg class="eval-step-check" viewBox="0 0 16 16" width="12" height="12"><path d="M13.5 4.5l-7 7L3 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span>Анализируем по критериям</span>
+            </div>
+            <div class="eval-progress-step" id="eval-step-3" data-step="3">
+              <div class="eval-step-icon">
+                <span class="eval-step-number">3</span>
+                <svg class="eval-step-spinner" viewBox="0 0 16 16" width="12" height="12"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" fill="none" stroke-dasharray="28 10" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 8 8" to="360 8 8" dur="0.8s" repeatCount="indefinite"/></circle></svg>
+                <svg class="eval-step-check" viewBox="0 0 16 16" width="12" height="12"><path d="M13.5 4.5l-7 7L3 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span>Формируем отчёт</span>
+            </div>
+          </div>
+          <div class="eval-progress-bar"><div id="eval-progress-fill" class="eval-progress-fill"></div></div>
+          <span class="eval-loading-text">Обычно занимает 10–15 секунд</span>
+        </div>
+        <div id="eval-summary" class="eval-summary" hidden>
+          <div class="eval-gauge-row">
+            <svg id="eval-gauge" class="eval-gauge" viewBox="0 0 120 70" width="120" height="70">
+              <path class="eval-gauge-bg" d="M10 65 A50 50 0 0 1 110 65" fill="none" stroke-width="8" stroke-linecap="round"/>
+              <path id="eval-gauge-arc" d="M10 65 A50 50 0 0 1 110 65" fill="none" stroke="#3b82f6" stroke-width="8" stroke-linecap="round" stroke-dasharray="0 157"/>
+              <text id="eval-gauge-score" x="60" y="55" text-anchor="middle" fill="#1a1a1a" font-size="20" font-weight="700"></text>
+            </svg>
+            <div class="eval-verdict-col">
+              <span id="eval-verdict-text" class="eval-verdict-text"></span>
+              <span id="eval-summary-text" class="eval-summary-brief"></span>
+            </div>
+          </div>
+          <div id="eval-mini-bars" class="eval-mini-bars"></div>
+          <button id="eval-detail-btn" class="btn-primary eval-detail-btn" type="button">Подробный отчёт</button>
+        </div>
+        <div id="follow-up-actions" class="follow-up-actions" hidden
+             aria-label="Действия после звонка" aria-live="polite">
+          <button id="followup-email-btn" class="btn-followup btn-followup-email" type="button"
+                  aria-label="Открыть черновик письма в Gmail">
+            Email follow-up
+          </button>
+          <button id="followup-crm-btn" class="btn-followup btn-followup-crm" type="button"
+                  aria-label="Скопировать заметку CRM в буфер обмена">
+            Копировать в CRM
+          </button>
+        </div>
+        <div id="eval-error" class="eval-error" hidden>
+          <span id="eval-error-text"></span>
+        </div>
+        <details class="briefing-section transcript-section" id="transcript-full-details" open>
+          <summary>
+            <span>Транскрипт</span>
+            <button id="download-transcript-btn" class="btn-download" type="button" title="Скачать транскрипт">&#x2B07;</button>
+          </summary>
+          <div id="transcript-full-list" class="transcript-list"></div>
+        </details>
+        <div id="briefing-collapsed-done" class="briefing-collapsed">
+          <!-- Preact BriefPanel mounts here -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ── Settings Overlay (full-body) ──────────────────────── -->
+    <div id="settings-overlay" class="settings-overlay" hidden>
+      <header class="settings-header">
+        <button id="settings-back-btn" class="back-btn" type="button">&#x2190; Назад</button>
+        <h2>Настройки</h2>
+      </header>
+      <div class="settings-body">
+        <div id="mic-settings" class="settings-group">
+          <div class="settings-group-header">Микрофон</div>
+          <div id="mic-status" class="mic-status">
+            <span id="mic-status-icon" class="mic-icon" aria-hidden="true">&#x1F3A4;</span>
+            <span id="mic-status-text">Не настроен</span>
+          </div>
+          <select id="mic-select" hidden>
+            <option value="">По умолчанию (системный)</option>
+          </select>
+          <button id="grant-mic-btn" type="button" class="btn-secondary">
+            Настроить микрофон
+          </button>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-header">Распознавание речи</div>
+          <label for="stt-provider-select">Провайдер</label>
+          <select id="stt-provider-select">
+            <option value="salutespeech">SaluteSpeech (Сбер)</option>
+            <option value="yandex">Yandex SpeechKit</option>
+          </select>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-header">Подключение</div>
+          <label for="backend-url-input">URL бэкенда</label>
+          <input
+            id="backend-url-input"
+            type="text"
+            placeholder="ws://localhost:8000/ws"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <label for="url-pattern-input">URL-паттерн CRM</label>
+          <input
+            id="url-pattern-input"
+            type="text"
+            placeholder="https://crm.example.com/*"
+            autocomplete="off"
+          />
+          <button id="save-settings-btn" type="button" class="btn-primary">
+            Сохранить
+          </button>
+          <div id="settings-saved" hidden aria-live="polite">&#x2713; Сохранено</div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-header">Оценка звонков</div>
+          <button id="eval-settings-btn" type="button" class="btn-secondary">Критерии</button>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-header">Тестирование</div>
+          <p class="settings-hint">Синтетический разговор без микрофона. Включите, затем нажмите REC.</p>
+          <button id="test-mode-btn" type="button" class="btn-secondary">
+            Тест: ВЫКЛ
+          </button>
+          <div id="test-mode-status" class="test-status" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="sidepanel.ts"></script>
+  </body>
+</html>

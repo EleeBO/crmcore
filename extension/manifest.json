@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "AI Sales Copilot",
+  "version": "0.7.1",
+  "permissions": [
+    "activeTab",
+    "tabCapture",
+    "offscreen",
+    "storage",
+    "tabs",
+    "alarms",
+    "sidePanel"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "ws://localhost:8000/*"
+  ],
+  "background": {
+    "service_worker": "src/background/service-worker.ts"
+  },
+  "action": {},
+  "side_panel": {
+    "default_path": "src/sidepanel/sidepanel.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "audio-worklet.js"
+      ],
+      "matches": [
+        "chrome-extension://*/*"
+      ]
+    }
+  ]
+}

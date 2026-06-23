@@ -1,0 +1,28 @@
+{
+  "name": "ai-sales-copilot-extension",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "bump": "node -e \"const f='manifest.json',m=JSON.parse(require('fs').readFileSync(f));const p=m.version.split('.').map(Number);p[2]++;m.version=p.join('.');require('fs').writeFileSync(f,JSON.stringify(m,null,2)+'\\n');console.log('v'+m.version)\"",
+    "build:worklet": "vite build --config vite.worklet.config.ts",
+    "build": "pnpm run bump && pnpm run build:worklet && vite build",
+    "dev": "pnpm run build:worklet && vite build --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.9.4",
+    "@testing-library/preact": "^3.2.4",
+    "@types/chrome": "^0.0.287",
+    "jsdom": "^29.0.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "vite-plugin-web-extension": "^4.2.0",
+    "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "@preact/signals": "^2.8.2",
+    "preact": "^10.29.0"
+  }
+}

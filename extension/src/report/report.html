@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Отчёт об оценке звонка</title>
+  <link rel="stylesheet" href="report.css">
+</head>
+<body>
+  <div class="report-container">
+    <div id="report-loading" class="report-loading">
+      <div class="report-spinner"></div>
+      <span>Загрузка отчёта...</span>
+    </div>
+    <div id="report-error" class="report-error" hidden></div>
+    <div id="report-content" class="report-content" hidden>
+      <!-- Header -->
+      <header class="report-header">
+        <div class="report-header-left">
+          <h1 class="report-title">Отчёт об оценке звонка</h1>
+          <span id="report-date" class="report-date"></span>
+        </div>
+        <div class="report-score-big">
+          <span id="report-score" class="score-number"></span>
+          <span id="report-verdict-badge" class="verdict-badge"></span>
+        </div>
+      </header>
+
+      <!-- Analytics (optional — only when diarization enabled) -->
+      <section id="report-analytics" class="report-card card-analytics" hidden>
+        <h2 class="card-title">Аналитика звонка</h2>
+        <div class="analytics-grid">
+          <div class="analytics-item" id="analytics-duration">
+            <span class="analytics-label">Длительность</span>
+            <span class="analytics-value" id="analytics-duration-val"></span>
+          </div>
+          <div class="analytics-item" id="analytics-talk-ratio">
+            <span class="analytics-label">Соотношение речи</span>
+            <div class="analytics-ratio-bar" id="analytics-ratio-bar"></div>
+            <span class="analytics-value" id="analytics-ratio-val"></span>
+          </div>
+          <div class="analytics-item">
+            <span class="analytics-label">Темп речи</span>
+            <span class="analytics-value" id="analytics-speech-rate-val"></span>
+          </div>
+          <div class="analytics-item">
+            <span class="analytics-label">Перебивания</span>
+            <span class="analytics-value" id="analytics-interruptions-val"></span>
+          </div>
+          <div class="analytics-item">
+            <span class="analytics-label">Пауза перед ответом</span>
+            <span class="analytics-value" id="analytics-pause-val"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Summary -->
+      <section class="report-card">
+        <h2 class="card-title">Резюме разговора</h2>
+        <p id="report-summary"></p>
+      </section>
+
+      <!-- Scorecard -->
+      <section id="report-scorecard" class="report-scorecard"></section>
+
+      <!-- Strengths -->
+      <section class="report-card card-strengths">
+        <h2 class="card-title">Сильные стороны</h2>
+        <ul id="report-strengths" class="icon-list strengths-list"></ul>
+      </section>
+
+      <!-- Growth areas -->
+      <section class="report-card card-growth">
+        <h2 class="card-title">Зоны роста</h2>
+        <ul id="report-growth" class="icon-list growth-list"></ul>
+      </section>
+
+      <!-- Action plan -->
+      <section class="report-card card-action">
+        <h2 class="card-title">План действий</h2>
+        <ol id="report-action-plan" class="action-list"></ol>
+      </section>
+
+      <!-- Footer -->
+      <footer class="report-footer">
+        <button id="copy-btn" class="btn-copy" type="button">Скопировать как текст</button>
+        <span class="report-disclaimer">Оценка сгенерирована автоматически</span>
+      </footer>
+    </div>
+  </div>
+
+  <script type="module" src="report.ts"></script>
+</body>
+</html>

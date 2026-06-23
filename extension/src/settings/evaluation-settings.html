@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Критерии оценки звонков</title>
+  <link rel="stylesheet" href="evaluation-settings.css">
+</head>
+<body>
+  <div class="settings-container">
+    <header class="settings-header">
+      <h1 class="settings-title">Критерии оценки звонков</h1>
+      <button id="reset-btn" class="btn-secondary" type="button">Сбросить на стандартные</button>
+    </header>
+
+    <div id="criteria-list" class="criteria-list"></div>
+
+    <button id="add-criterion-btn" class="btn-add" type="button">+ Добавить критерий</button>
+
+    <footer class="settings-footer">
+      <div id="weight-status" class="weight-status">
+        <span>Сумма весов: </span>
+        <span id="weight-sum">100%</span>
+      </div>
+      <div id="validation-error" class="validation-error" hidden></div>
+      <button id="save-btn" class="btn-save" type="button">Сохранить</button>
+    </footer>
+  </div>
+
+  <script type="module" src="evaluation-settings.js"></script>
+</body>
+</html>
