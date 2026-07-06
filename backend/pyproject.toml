@@ -1,0 +1,69 @@
+[project]
+name = "ai-sales-copilot"
+version = "0.1.0"
+description = "Real-time AI sales assistant backend"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+    "pydantic-settings>=2.7.0",
+    "redis[hiredis]>=5.2.0",
+    "chromadb>=0.6.0",
+    "onnxruntime>=1.20.0",
+    "sentence-transformers>=3.4.0",
+    "openai>=1.60.0",
+    "deepgram-sdk>=3.9.0",
+    "PyMuPDF>=1.25.0",
+    "openpyxl>=3.1.0",
+    "python-docx>=1.1.0",
+    "rank-bm25>=0.2.2",
+    "loguru>=0.7.0",
+    "python-multipart>=0.0.18",
+]
+
+[project.optional-dependencies]
+salutespeech = [
+    "grpcio>=1.68.0",
+    "grpcio-tools>=1.68.0",
+]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.25.0",
+    "pytest-cov>=6.0.0",
+    "ruff>=0.9.0",
+    "mypy>=1.14.0",
+    "httpx>=0.28.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = [".."]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+extend-exclude = [
+    "*_pb2.py",
+    "*_pb2_grpc.py",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "A", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"pipeline/salutespeech/*_pb2*.py" = ["N802", "N806", "E501"]
+"pipeline/yandexstt/*_pb2*.py" = ["N802", "N806", "E501"]
+# Tests use uppercase constants, long fixture strings, and B017 (raises blind Exception)
+# is a valid pattern for "any error" assertions.
+"tests/**/*.py" = ["E501", "N806", "F841", "B017", "B905", "E741", "SIM117"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
