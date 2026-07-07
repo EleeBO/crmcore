@@ -1,0 +1,209 @@
+# CodeRush2 - Project Configuration
+# Dependency management: uv (https://github.com/astral-sh/uv)
+#
+# Why uv over Poetry?
+# - 10-100x faster dependency resolution
+# - Written in Rust by Astral (creators of Ruff)
+# - Drop-in replacement for pip
+# - Global cache with Copy-on-Write (saves disk space)
+# - Better for CI/CD pipelines
+#
+# Commands:
+#   uv sync              - Install all dependencies
+#   uv add <package>     - Add dependency
+#   uv add -D <package>  - Add dev dependency
+#   uv lock              - Update lock file
+#   uv run <command>     - Run in virtual environment
+
+[project]
+name = "coderush2"
+version = "0.1.0"
+description = "AI-powered development workflow with Claude Code"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "PolyForm-Noncommercial-1.0.0" }
+authors = [
+    { name = "Sergey Teterin", email = "teterinsa@gmail.com" }
+]
+
+# Core dependencies
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "pydantic>=2.9.0",
+    "pydantic-settings>=2.6.0",
+    "sqlalchemy[asyncio]>=2.0.0",
+    "asyncpg>=0.30.0", # PostgreSQL async driver
+    "alembic>=1.14.0", # Database migrations
+    "loguru>=0.7.0", # Logging (replaces standard logging)
+    "httpx>=0.28.0", # Async HTTP client
+    "python-multipart>=0.0.12", # Form data support
+    "annotated-types>=0.7.0", # SGR patterns (MinLen, MaxLen)
+    "grpcio>=1.78.0",
+    "grpcio-tools>=1.78.0",
+    "sounddevice>=0.5.5",
+    "numpy>=2.4.3",
+]
+
+[project.optional-dependencies]
+# Development dependencies (uv add -D <package>)
+dev = [
+    # Testing
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=6.0.0",
+    "pytest-xdist>=3.5.0",      # Parallel tests
+    "hypothesis>=6.115.0",       # Property-based testing
+    "httpx>=0.28.0",             # Test client
+
+    # Linting & Formatting
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+    "basedpyright>=1.22.0",      # Alternative type checker
+
+    # Security
+    "bandit>=1.7.0",
+    "pip-audit>=2.7.0",
+]
+
+# ML/AI dependencies (optional)
+ml = [
+    "anthropic>=0.40.0",
+    "openai>=1.50.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["backend"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# uv: install all groups + extras by default so `uv sync` gives a complete dev environment
+[tool.uv]
+default-groups = ["dev", "backend"]
+
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-cov>=7.0.0",
+    "httpx>=0.28.0",
+    "ruff>=0.8.0",
+    "mypy>=1.13.0",
+]
+# Backend runtime dependencies not in [project.dependencies] above.
+# These are declared in backend/pyproject.toml but must be listed here
+# so `uv sync` installs them into the shared venv used by tests.
+backend = [
+    "redis[hiredis]>=5.2.0",
+    "PyMuPDF>=1.25.0",
+    "openpyxl>=3.1.0",
+    "python-docx>=1.1.0",
+    "chromadb>=0.6.0",
+    "onnxruntime>=1.20.0",
+    "sentence-transformers>=3.4.0",
+    "rank-bm25>=0.2.2",
+    "python-multipart>=0.0.18",
+    "deepgram-sdk>=3.9.0",
+    "openai>=1.60.0",
+]
+
+# ============================================
+# Tool Configurations
+# ============================================
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+exclude = [
+    ".venv",
+    "node_modules",
+    "__pycache__",
+    ".git",
+    "dist",
+    "build",
+]
+# protoc-generated files — keep separate so user-set excludes don't blow these away
+extend-exclude = [
+    "*_pb2.py",
+    "*_pb2_grpc.py",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+    "S",      # flake8-bandit (security)
+    "RUF",    # Ruff-specific rules
+]
+ignore = [
+    "S101",   # assert used (ok in tests)
+    "B008",   # function call in default argument (ok for Depends)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*" = ["S101", "ARG"]
+# Standalone test runners use uppercase constants (SAMPLE_RATE etc.) and long log lines.
+"backend/tests/test_*_mic.py" = ["S101", "ARG", "N802", "N806", "E501", "F841", "B017", "B905"]
+"backend/tests/test_*_synthetic.py" = ["S101", "ARG", "N802", "N806", "E501", "F841", "B017", "B905"]
+"backend/tests/test_ws_synthetic.py" = ["S101", "ARG", "N802", "N806", "E501", "F841", "B017", "B905"]
+"backend/pipeline/salutespeech/*_pb2*.py" = ["N802", "N806", "E501"]
+"backend/pipeline/yandexstt/*_pb2*.py" = ["N802", "N806", "E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_ignores = false
+disallow_untyped_defs = true
+ignore_missing_imports = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+asyncio_mode = "auto"
+addopts = [
+    "-v",
+    "--strict-markers",
+    "-ra",  # Show extra test summary
+    "--cov=backend",
+    "--cov-report=term-missing",
+]
+markers = [
+    "slow: marks tests as slow",
+    "integration: marks tests as integration tests",
+]
+
+[tool.coverage.run]
+source = ["backend"]
+branch = true
+omit = ["tests/*", "*/__pycache__/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+]
+fail_under = 0
+
+[tool.basedpyright]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"

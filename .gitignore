@@ -1,0 +1,57 @@
+# Secrets / credentials — NEVER commit
+.env
+*.env
+!*.env.example
+credential.txt
+credentials.txt
+*.pem
+!backend/certs/russian_trusted_root_ca.pem  # public Russian root CA, required for SaluteSpeech mTLS
+*.key
+docs/yandex.md
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Node / build artefacts
+node_modules/
+extension/dist/
+
+# Data / model cache
+chroma_data/
+*.bin
+*.onnx
+*.sqlite
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+.claude/worktrees/
+.claude/settings.local.json
+worktrees/
+.superpowers/
+
+# Logs
+backend/logs/
+*.log
+
+# E2E test artifacts
+tests/e2e/screenshots/
+tests/e2e/videos/
